@@ -3,9 +3,24 @@ params = {'screen_name': 'kubkon'}
 import requests
 from requests_oauthlib import OAuth1
 auth = OAuth1('wzHxGyRdo5gWpmDsrY5PsOcwv', 'VYnGAPeSgUpWwwgLVZgOCgaJkAotiZ3KBugx8107xjPJdIUq2W', '295716171-Fulev7nEe1tRzdPWQq9zTokgSnFFqgULuegO3Rwg', '4smle6UHhSyoxCuit7vZgrzZHrT8HTszniowPegVDzmNg')
-requests
-#can't remember if line6 was actually necessary because json wasn't defined, was fixed in line9 i think, will run and see what happens :)
-requests.json()
 response = requests.get(url, params=params, auth=auth)
 response.status_code
 response.json()
+
+################################################################
+#url = "https://api.twitter.com/1.1/statuses/lookup.json"
+#params = {'hashtags':'strathclyde'}
+#import requests
+#from requests_oauthlib import OAuth1
+#auth = OAuth1('wzHxGyRdo5gWpmDsrY5PsOcwv', 'VYnGAPeSgUpWwwgLVZgOCgaJkAotiZ3KBugx8107xjPJdIUq2W', '295716171-Fulev7nEe1tRzdPWQq9zTokgSnFFqgULuegO3Rwg', '4smle6UHhSyoxCuit7vZgrzZHrT8HTszniowPegVDzmNg')
+#response = requests.get(url, params=params, auth=auth)
+#response.status_code
+#response.json()
+#print(response.json())
+
+#what laura's changed! .....
+#edited 1.1/users to 1.1/statuses to check through user statuses
+#edicated screen name variable to hashtags as that's the variable needed to search
+#but this is within another variable named entities
+#how do i check to search within 2 variables for say 'strathclyde'?
+#come back to it later :)
