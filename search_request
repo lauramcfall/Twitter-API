@@ -1,0 +1,38 @@
+import requests
+#from pprint import pprint #--> not really needed
+from requests_oauthlib import OAuth1
+import json
+
+
+url = "https://api.twitter.com/1.1/search/tweets.json" #--> for search queries
+
+q = input("What do you want to look for? \n")
+count = int(input("How many tweets do you want?\n"))
+#location = "55.8580,4.2590,10mi" --> doesnt work
+
+#params = {'q': q, 'count': count, 'geocode' : location} # geocode doesnt work
+params = {'q': q, 'count': count}
+auth = OAuth1('wzHxGyRdo5gWpmDsrY5PsOcwv', 'VYnGAPeSgUpWwwgLVZgOCgaJkAotiZ3KBugx8107xjPJdIUq2W', '295716171-Fulev7nEe1tRzdPWQq9zTokgSnFFqgULuegO3Rwg', '4smle6UHhSyoxCuit7vZgrzZHrT8HTszniowPegVDzmNg')
+response = requests.get(url, params=params, auth=auth)
+#response.status_code --> to check if requests works ok
+raw = response.text
+info = json.loads(raw)
+
+
+for status in info['statuses']:
+    user = u'User: %s' % status['user']['screen_name']
+    tweet = u'Tweet: {}'.format(status['text'])
+    location = u'Location: %s' % status['user']['location']
+    #tweet = (u'User: %s,\n Text: %s, \n Location: %s \n \n' % (status['user']["screen_name"],
+                                    #status['text'],
+                                    #status['user']['location']))
+    try:
+        print(user)
+        print(tweet)
+        print(location)
+    except UnicodeEncodeError:
+        print('EMOJI OVERLOAD OH GOD')
+        
+    
+
+#error with emojis = UnicodeEncodeError
