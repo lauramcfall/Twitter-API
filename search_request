@@ -2,6 +2,7 @@ import requests
 #from pprint import pprint #--> not really needed
 from requests_oauthlib import OAuth1
 import json
+import re
 
 
 url = "https://api.twitter.com/1.1/search/tweets.json" #--> for search queries
@@ -18,18 +19,21 @@ response = requests.get(url, params=params, auth=auth)
 raw = response.text
 info = json.loads(raw)
 
+#used later to replace emojis
+highpoints = re.compile(u'[\U00010000-\U0010ffff]')
 
+#look through all the data in "info" and print username, tweet and location
 for status in info['statuses']:
     user = u'User: %s' % status['user']['screen_name']
     tweet = u'Tweet: {}'.format(status['text'])
     location = u'Location: %s' % status['user']['location']
-    #tweet = (u'User: %s,\n Text: %s, \n Location: %s \n \n' % (status['user']["screen_name"],
-                                    #status['text'],
-                                    #status['user']['location']))
+
+
     try:
-        print(user)
-        print(tweet)
-        print(location)
+        print(highpoints.sub(u'\u25FD', user))
+        print(highpoints.sub(u'\u25FD', tweet))
+        print(highpoints.sub(u'\u25FD', location))
+        
     except UnicodeEncodeError:
         print('EMOJI OVERLOAD OH GOD')
         
