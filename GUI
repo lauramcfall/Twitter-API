@@ -1,0 +1,46 @@
+#import tkinter
+from tkinter import *
+#create window starting from top
+#top = Tk()
+#insert text in main window
+#text = Text(top)
+#text to be insert in main window in ''
+#text.insert(INSERT, 'Hi welcome to group B2s twitter project :)')
+#text.insert(END,'\nWhat would you like to search on Twitter today?')
+#trying to create extra width around text, not completely working
+#text.padx=10
+#trying to create extra height around text, not working
+#text.pady=15
+#trying to wrap sentences at the end of each word as opposed to the end characters
+#that fit, not successful right now
+#text.wrap=WORD
+#pack everything into window in way program thinks best
+#text.pack()
+
+
+#this opens little window with msg
+#main=Tk()
+#theLabel = Label(main, text='Welcome to group B2s Twitter Project, \nWhat would you like to search on twitter today?')
+#theLabel.pack()
+#main.mainloop()
+
+
+#organising******************************************
+main=Tk()
+main.title('B2s Twitter Project')
+topFrame = Frame(main)
+topFrame.pack()
+bottomFrame = Frame(main)
+bottomFrame.pack(side=BOTTOM)
+WelcomeLabel = Label(main, text='Welcome to group B2s Twitter Project, \nWhat would you like to search on twitter today?')
+#WelcomeLabel.padx=1000
+#WelcomeLabel.pady=2000
+WelcomeLabel.pack(side=TOP, padx=100, pady=100)
+Label(main, text='Search:').pack()
+e1 = Entry(main)
+e1.pack()
+button1 = Button(bottomFrame, text='Confirm Selection', fg='blue')
+button1.pack(side=BOTTOM)
+
+
+main.mainloop()
