@@ -3,36 +3,46 @@ from requests_oauthlib import OAuth1
 import json
 import re
 
+#search class that deals with the usr search request, searches for tweets and
+#usernames that match the user input
 class Search:
-    
+
+    #q is querry (what to look for) and count is the number of results
     def __init__(self,q,count):
         self.q = q
         self.count = count
-                #build the search request
+        
+    #build the search request   
+    def build(self):      
         self.url = "https://api.twitter.com/1.1/search/tweets.json" #--> for search queries
-        self.params = {'q': q, 'count': count}
+        self.params = {'q': self.q, 'count': self.count}
         self.auth = OAuth1('wzHxGyRdo5gWpmDsrY5PsOcwv', 'VYnGAPeSgUpWwwgLVZgOCgaJkAotiZ3KBugx8107xjPJdIUq2W', '295716171-Fulev7nEe1tRzdPWQq9zTokgSnFFqgULuegO3Rwg', '4smle6UHhSyoxCuit7vZgrzZHrT8HTszniowPegVDzmNg')
         self.response = requests.get(self.url, params=self.params, auth=self.auth)
         self.raw = self.response.text
         self.info = json.loads(self.raw)#--> end result   
 
-    def scan(self):
     #look through all the data in "info" and print username, tweet and location
+    def scan(self):
+        #for every relevant result
         for status in self.info['statuses']:
+            #retrieve username, tweet and location
             self.user = u'USER: %s' % status['user']['screen_name']
             self.tweet = u'TWEET: %s' %status['text']
             self.location = u'LOCATION: %s' % status['user']['location']
                 
-                #used to deal with emojis
+            #used to deal with emojis, replaces them with blank squres
             self.highpoints = re.compile(u'[\U00010000-\U0010ffff]')
-
-                #replace any emojis with blank squares
+            self.user = self.highpoints.sub(u'\u25FD', self.user)
+            self.tweet = self.highpoints.sub(u'\u25FD', self.tweet)
+            self.location = self.highpoints.sub(u'\u25FD', self.location)
+                                            
+            #print the results
             try:
-                print(self.highpoints.sub(u'\u25FD', self.user))
-                print(self.highpoints.sub(u'\u25FD', self.tweet))
-                print(self.highpoints.sub(u'\u25FD', self.location))
+                print(self.user)
+                print(self.tweet)
+                print(self.location)
                 print('\n')
-                #if all else fails
+            #if all else fails
             except UnicodeEncodeError:
                 print('EMOJI OVERLOAD OH GOD')
             
@@ -50,12 +60,9 @@ while True:
         count = int(input("How many tweets do you want?\n"))
         break
     except ValueError:
-        print("Input a valid number of tweets to look for please")
+        print("Input a valid number of tweets to look for")
 
+#create the search request
 search = Search(q,count)
-search.scan
-
-#now turn everything into a class/function and you're done    
-
-#error with emojis = UnicodeEncodeError
-
+search.build()
+search.scan()
