@@ -23,28 +23,35 @@ class Search:
 
     #look through all the data in "info" and print username, tweet and location
     def scan(self):
-        #for every relevant result
-        for status in self.info['statuses']:
-            #retrieve username, tweet and location
-            self.user = u'USER: %s' % status['user']['screen_name']
-            self.tweet = u'TWEET: %s' %status['text']
-            self.location = u'LOCATION: %s' % status['user']['location']
+        try:
+            #does this for every relevant result
+            for status in self.info['statuses']:
                 
-            #used to deal with emojis, replaces them with blank squres
-            self.highpoints = re.compile(u'[\U00010000-\U0010ffff]')
-            self.user = self.highpoints.sub(u'\u25FD', self.user)
-            self.tweet = self.highpoints.sub(u'\u25FD', self.tweet)
-            self.location = self.highpoints.sub(u'\u25FD', self.location)
-                                            
-            #print the results
-            try:
-                print(self.user)
-                print(self.tweet)
-                print(self.location)
-                print('\n')
-            #if all else fails
-            except UnicodeEncodeError:
-                print('EMOJI OVERLOAD OH GOD')
+                #retrieve username, tweet and location
+                self.user = u'USER: %s' % status['user']['screen_name']
+                self.tweet = u'TWEET: %s' %status['text']
+                self.location = u'LOCATION: %s' % status['user']['location']
+                    
+                #used to deal with emojis, replaces them with blank squres
+                self.highpoints = re.compile(u'[\U00010000-\U0010ffff]')
+                self.user = self.highpoints.sub(u'\u25FD', self.user)
+                self.tweet = self.highpoints.sub(u'\u25FD', self.tweet)
+                self.location = self.highpoints.sub(u'\u25FD', self.location)
+                                                
+                #print the results
+                try:
+                    print(self.user)
+                    print(self.tweet)
+                    print(self.location)
+                    print('\n')
+                    
+                #if all else fails
+                except UnicodeEncodeError:
+                    print('EMOJI OVERLOAD OH GOD')
+                    
+        #this occurs only if the user inputs non-words as querry(spaces etc)
+        except KeyError:
+            print("Invalid search querry, input words to look for")
             
 ###         ###
 ###___MAIN___###
@@ -58,7 +65,10 @@ while True:
 while True:
     try:
         count = int(input("How many tweets do you want?\n"))
-        break
+        #prevents user from inputing invalid tweet count values
+        if count > 0:
+            break
+        
     except ValueError:
         print("Input a valid number of tweets to look for")
 
