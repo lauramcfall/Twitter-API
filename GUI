@@ -1,0 +1,31 @@
+from tkinter import *
+
+class GUI(Frame):
+    def __init__(self,master):
+        Frame.__init__(self,master)
+        self.pack()
+        self.create_label()
+        self.user_entry()
+        self.create_widgets()
+
+    def create_label(self):
+        self.WelcomeLabel = Label(self, text='Welcome to Flying Unicorns Twitter Project')
+        self.WelcomeLabel.pack(side=TOP, padx=10, pady=10)
+        self.SearchLabel = Label(self, text= 'Search:')
+        self.SearchLabel.pack()
+
+    def user_entry(self):
+        self.UserEntry = Entry(self)
+        self.UserEntry.pack(padx=10, pady=10)
+
+    def create_widgets(self):
+        self.button1 = Button(self, text='Confirm Selection', fg='blue')
+        self.button1.pack(padx=10, pady=10)
+        self.results_display = Listbox(self, width = 50, height = 20)
+        self.results_display.pack(padx=10, pady=10)
+
+root = Tk()
+root.title('Twitter API Project')
+root.geometry("600x600")
+app = GUI(root)
+root.mainloop()
