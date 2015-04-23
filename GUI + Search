@@ -4,7 +4,6 @@ from requests_oauthlib import OAuth1
 import json
 import re
 
-
 class GUI(Frame):
     #defining GUI objects and functions
     def __init__(self,master):#,q,count):
@@ -65,12 +64,6 @@ class GUI(Frame):
             for search.s in search.s:
                 self.results_display.insert(END, search.s)
         
-
-
-
-
-
-
 #search class that deals with the usr search request, searches for tweets and
 #usernames that match the user input
 class Search:
@@ -125,7 +118,6 @@ class Search:
         except KeyError:
             print( 'Invalid search query, input words to look for')
             
-
 root = Tk()
 root.title('Twitter API Project')
 root.geometry("600x600")
