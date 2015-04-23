@@ -116,7 +116,12 @@ class Search:
                     
         #this occurs only if the user inputs non-words as querry(spaces etc)
         except KeyError:
-            print( 'Invalid search query, input words to look for')
+            popup2 = Toplevel()
+            popup2.title('Error!')
+            msg=Message(popup2,text='Please submit a valid query')
+            msg.pack()
+            bttn2=Button(popup2, text='Ok', command = GUI.user_entry)
+            bttn2.pack()
             
 root = Tk()
 root.title('Twitter API Project')
