@@ -1,0 +1,134 @@
+from tkinter import *
+import requests
+from requests_oauthlib import OAuth1
+import json
+import re
+
+
+class GUI(Frame):
+    #defining GUI objects and functions
+    def __init__(self,master):#,q,count):
+        Frame.__init__(self,master)
+        self.pack()
+        self.create_label()
+        self.user_entry()
+        self.create_widgets()
+
+    def create_label(self):
+        self.WelcomeLabel = Label(self, text='Welcome to Flying Unicorns Twitter Project')
+        self.WelcomeLabel.grid(row=0, padx=10, pady=10)
+        self.SearchLabelq = Label(self, text= 'What do you want to look for? \n')
+        self.SearchLabelq.grid(row=1)
+        self.SearchLabelCount = Label(self, text= 'How many tweets would you like? \n')
+        self.SearchLabelCount.grid(row=3)
+
+    def user_entry(self):
+        self.entry1 = Entry(self)
+        self.entry1.grid(row=2, padx=10, pady=10)
+        self.entry2 = Entry(self)
+        self.entry2.grid(row=4,padx=10,pady=10)
+
+    def create_widgets(self):
+        self.button1 = Button(self, text='Confirm Selection', fg='blue', command = self.get_entries)
+        self.button1.grid(row=5,padx=10, pady=10)
+
+    def get_entries(self):
+        bool=0
+        self.q = self.entry1.get()
+        self.count = self.entry2.get()
+        while True:
+            try:
+                #prevents user from inputing invalid tweet count values
+                if int(self.count) > 0:
+                    break
+                
+            except ValueError:
+                print("Input a valid number of tweets to look for")
+                bool=1
+                break
+        #### create pop up to inform user of invalid input, returns to user entry
+        if bool==1:
+            popup = Toplevel()
+            popup.title('Error!')
+            msg=Message(popup,text='Please submit a valid number')
+            msg.pack()
+            bttn1=Button(popup, text='Ok', command = self.user_entry)
+            bttn1.pack()
+            
+        ## if all inputs ok, carry out search & display results in Listbox
+        else:
+            search = Search(self.q,self.count)
+            search.build()
+            search.scan()
+            self.results_display = Listbox(self, width = 80, height = 20)
+            self.results_display.grid(row=6, padx=10, pady=10)
+            for search.s in search.s:
+                self.results_display.insert(END, search.s)
+        
+
+
+
+
+
+
+#search class that deals with the usr search request, searches for tweets and
+#usernames that match the user input
+class Search:
+
+    #q is querry (what to look for) and count is the number of results
+    def __init__(self,q,count):
+        self.q = q
+        self.count = count
+        
+    #build the search request   
+    def build(self):      
+        self.url = "https://api.twitter.com/1.1/search/tweets.json" #--> for search queries
+        self.params = {'q': self.q, 'count': self.count}
+        self.auth = OAuth1('wzHxGyRdo5gWpmDsrY5PsOcwv', 'VYnGAPeSgUpWwwgLVZgOCgaJkAotiZ3KBugx8107xjPJdIUq2W', '295716171-Fulev7nEe1tRzdPWQq9zTokgSnFFqgULuegO3Rwg', '4smle6UHhSyoxCuit7vZgrzZHrT8HTszniowPegVDzmNg')
+        self.response = requests.get(self.url, params=self.params, auth=self.auth)
+        self.raw = self.response.text
+        self.info = json.loads(self.raw)#--> end result   
+
+    #look through all the data in "info" and print username, tweet and location
+    def scan(self):
+        try:
+            #list to append all
+            self.s = []
+            #does this for every relevant result
+            for status in self.info['statuses']:
+                
+                #retrieve username, tweet and location
+                self.user = u'USER: %s' % status['user']['screen_name']
+                self.tweet = u'TWEET: %s' %status['text']
+                self.location = u'LOCATION: %s' % status['user']['location']
+                    
+                #used to deal with emojis, replaces them with blank squres
+                self.highpoints = re.compile(u'[\U00010000-\U0010ffff]')
+                self.user = self.highpoints.sub(u'\u25FD', self.user)
+                self.tweet = self.highpoints.sub(u'\u25FD', self.tweet)
+                self.location = self.highpoints.sub(u'\u25FD', self.location)
+                                                
+                #print the results
+                try:
+                    #self.u = self.user +"\n"+ self.tweet +"\n"+ self.location
+                    self.u = self.user + self.tweet + self.location
+                    self.s.append(self.u)
+                    print(self.u)
+                    print(self.s)
+                    print('\n')
+                    
+                #if all else fails (this should never happen anymore)
+                except UnicodeEncodeError:
+                    print('EMOJI OVERLOAD OH GOD')
+                    
+        #this occurs only if the user inputs non-words as querry(spaces etc)
+        except KeyError:
+            print( 'Invalid search query, input words to look for')
+            
+
+root = Tk()
+root.title('Twitter API Project')
+root.geometry("600x600")
+app = GUI(root)
+root.mainloop()
+
